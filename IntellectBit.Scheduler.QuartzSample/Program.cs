@@ -3,19 +3,19 @@ using Quartz;
 using Quartz.Impl;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace IntellectBit.Scheduler.QuartzSample
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static async Task Main()
         {
             ILog log = LogManager.GetLogger(typeof(Program));
 
             // First we must get a reference to a scheduler
             ISchedulerFactory sf = new StdSchedulerFactory();
-            IScheduler sched = sf.GetScheduler().Result;
-
+            IScheduler sched = await sf.GetScheduler();
             try
             {
                 var startTime = DateTimeOffset.Now.AddSeconds(5);
@@ -30,14 +30,14 @@ namespace IntellectBit.Scheduler.QuartzSample
                     .WithSimpleSchedule(x => x.WithIntervalInSeconds(10).RepeatForever())
                     .Build();
 
-                sched.ScheduleJob(job, trigger);
+                await sched.ScheduleJob(job, trigger);
 
-                sched.Start();
+                await sched.Start();
                 Thread.Sleep(TimeSpan.FromMinutes(2));
             }
             finally
             {
-                sched.Shutdown(true);
+                await sched.Shutdown(true);
             }
         }
     }
