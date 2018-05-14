@@ -30,11 +30,17 @@ namespace IntellectBit.Scheduler.QuartzSample
                     .WithSimpleSchedule(x => x.WithIntervalInSeconds(10).RepeatForever())
                     .Build();
 
-                await sched.ScheduleJob(job, trigger);
+               // await sched.ScheduleJob(job, trigger);
 
                 await sched.Start();
                 Thread.Sleep(TimeSpan.FromMinutes(2));
             }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
             finally
             {
                 await sched.Shutdown(true);
